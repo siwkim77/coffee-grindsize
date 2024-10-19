@@ -442,11 +442,10 @@
                 try {
                     const importedData = JSON.parse(event.target.result);
                     if (validateImportedData(importedData)) {
-                        // 클릭 수를 정수로 변환 (10배)
                         for (let grinder in importedData) {
                             for (let characteristic in importedData[grinder]) {
                                 importedData[grinder][characteristic] = importedData[grinder][characteristic].map(entry => ({
-                                    clicks: Math.round(entry.clicks * 10),
+                                    clicks: entry.clicks,
                                     grind: entry.grind
                                 }));
                             }

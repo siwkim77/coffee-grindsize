@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>데이터 관리 - 그라인더 분쇄도 변환기</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Favicon 추가 -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- 또는 PNG 사용 시 -->
+    <!-- <link rel="icon" href="favicon.png" type="image/png"> -->
+    
+    <!-- 웹 앱 매니페스트 추가 -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- 메타 태그: 테마 색상 설정 -->
+    <meta name="theme-color" content="#FFB74D">
+    
+    <!-- 구글 폰트 추가 -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 글로벌 스타일 */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* CSS 변수으로 색상 관리 */
+        :root {
+            --primary-color: #4E342E; /* 다크 브라운 */
+            --secondary-color: #6D4C41; /* 라이트 브라운 */
+            --accent-color: #FFB74D; /* 골든 옐로우 */
+            --background-color: #f5f5f5; /* 라이트 그레이 */
+            --text-color: #3E2723; /* 진한 브라운 */
+            --border-color: #BCAAA4; /* 연한 브라운 */
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --success-color: #8BC34A; /* 연두색 */
+            --info-color: #FFB74D; /* 골든 옐로우 */
+        }
+
+        /* 기본 스타일링 */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+        }
+
+        .data-view, .navigation, .backup-restore {
+            background: #fff;
+            padding: 25px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            margin-bottom: 25px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .navigation a {
+            display: inline-block;
+            margin-bottom: 0px;
+            text-decoration: none;
+            color: var(--accent-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .navigation a:hover {
+            color: var(--primary-color);
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1em;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        select:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 5px var(--accent-color);
+        }
+
+        /* 데이터 없음 메시지 스타일 (메인 페이지 스타일과 유사하게) */
+        .no-data-message {
+            margin-top: 25px;
+            padding: 15px;
+            background: #FFE0B2; /* 라이트 오렌지 */
+            border-left: 5px solid var(--accent-color);
+            border-radius: 5px;
+            font-size: 1.1em;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        /* 데이터 목록 스타일 */
+        .data-list {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .data-list table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-list th, .data-list td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .data-list th {
+            background-color: var(--secondary-color);
+            color: #fff;
+        }
+
+        /* 삭제 버튼 스타일 */
+        .data-list td .delete-btn {
+            background: none;
+            border: none;
+            color: #E53935;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .data-list td .delete-btn:hover {
+            color: #B71C1C;
+        }
+
+        /* 백업 및 복원 섹션 스타일 */
+        .backup-restore {
+            text-align: center;
+        }
+
+        .backup-restore button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--info-color);
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .backup-restore button:hover {
+            background-color: #FFA726;
+        }
+
+        /* 파일 입력 숨기기 */
+        #importFile {
+            display: none;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+
+            .data-view, .navigation, .backup-restore {
+                padding: 20px 15px;
+                max-width: 100%;
+            }
+
+            .data-list table, .data-list th, .data-list td {
+                font-size: 0.9em;
+            }
+
+            .backup-restore button {
+                width: 100%;
+                margin: 10px 0;
+            }
+        }
+
+        /* SVG 아이콘 스타일 */
+        .delete-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>데이터 관리</h1>
+
+    <!-- 데이터 관리 섹션 -->
+    <div class="data-view">
+        <div class="field">
+            <label for="viewGrinderType">그라인더 종류 선택:</label>
+            <select id="viewGrinderType">
+                <option value="">그라인더 선택</option>
+                <!-- 옵션은 JavaScript에서 동적으로 추가 -->
+            </select>
+        </div>
+        <div class="field">
+            <label for="viewBeanCharacteristic">원두 특징 선택:</label>
+            <select id="viewBeanCharacteristic">
+                <option value="">원두 특징 선택</option>
+                <!-- 옵션은 JavaScript에서 동적으로 추가 -->
+            </select>
+        </div>
+
+        <!-- 데이터 목록 표시 섹션 -->
+        <div class="data-list" id="dataList">
+            <p class="no-data-message" id="noDataMessage">그라인더와 원두 특징을 선택하세요</p>
+            <div id="dataTable" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- 백업 및 복원 섹션 -->
+    <div class="backup-restore">
+        <button id="exportJson">JSON으로 백업</button>
+        <button id="importJson">JSON 불러오기</button>
+        <input type="file" id="importFile" accept=".json">
+    </div>
+    
+    <div class="navigation">
+        <a href="index.html">&larr; 메인 페이지</a>
+    </div>
+
+
+    <script>
+        // 초기 데이터 정의 (클릭 수를 10배로 확대하고 정수로 설정)
+        const defaultData = {
+            "K Ultra": {
+                "약배전 에티오피아 내추럴": [
+                    { clicks: 100, grind: 1220 },
+                    { clicks: 95, grind: 1150 },
+                    { clicks: 90, grind: 1080 },
+                    { clicks: 85, grind: 1040 },
+                    { clicks: 80, grind: 980 },
+                    { clicks: 75, grind: 940 },
+                    { clicks: 70, grind: 900 },
+                    { clicks: 65, grind: 875 },
+                    { clicks: 60, grind: 850 },
+                    { clicks: 55, grind: 800 },
+                    { clicks: 50, grind: 750 },
+                    { clicks: 45, grind: 700 },
+                    { clicks: 40, grind: 650 }
+                ]
+            }
+            // 다른 그라인더와 원두 특징은 사용자에 의해 추가될 수 있음
+        };
+
+        // 데이터 로드 또는 초기화
+        let grinderData = JSON.parse(localStorage.getItem('grinderData')) || defaultData;
+
+        // DOM 요소 참조
+        const viewGrinderTypeSelect = document.getElementById('viewGrinderType');
+        const viewBeanCharacteristicSelect = document.getElementById('viewBeanCharacteristic');
+        const dataList = document.getElementById('dataList');
+        const noDataMessage = document.getElementById('noDataMessage');
+        const dataTable = document.getElementById('dataTable');
+        const exportJsonBtn = document.getElementById('exportJson');
+        const importJsonBtn = document.getElementById('importJson');
+        const importFileInput = document.getElementById('importFile');
+
+        // 초기화 함수
+        function initialize() {
+            populateGrinderTypes();
+            populateBeanCharacteristics();
+        }
+
+        // 그라인더 종류 드롭다운 채우기
+        function populateGrinderTypes() {
+            viewGrinderTypeSelect.innerHTML = '<option value="">그라인더 선택</option>';
+            for (let grinder in grinderData) {
+                const option = document.createElement('option');
+                option.value = grinder;
+                option.textContent = grinder;
+                viewGrinderTypeSelect.appendChild(option);
+            }
+        }
+
+        // 원두 특징 드롭다운 채우기
+        function populateBeanCharacteristics() {
+            const selectedGrinder = viewGrinderTypeSelect.value;
+            viewBeanCharacteristicSelect.innerHTML = '<option value="">원두 특징 선택</option>';
+            if (selectedGrinder && grinderData[selectedGrinder]) {
+                for (let characteristic in grinderData[selectedGrinder]) {
+                    const option = document.createElement('option');
+                    option.value = characteristic;
+                    option.textContent = characteristic;
+                    viewBeanCharacteristicSelect.appendChild(option);
+                }
+            }
+        }
+
+        // 그라인더 선택 시 원두 특징 업데이트
+        viewGrinderTypeSelect.addEventListener('change', () => {
+            populateBeanCharacteristics();
+            renderDataList();
+        });
+
+        // 원두 특징 선택 시 데이터 목록 업데이트
+        viewBeanCharacteristicSelect.addEventListener('change', () => {
+            renderDataList();
+        });
+
+        // 데이터 삭제 함수
+        function deleteData(grinder, characteristic, index) {
+            if (confirm("해당 데이터를 정말 삭제하시겠습니까?")) {
+                grinderData[grinder][characteristic].splice(index, 1);
+                saveData();
+                renderDataList();
+                alert("데이터가 성공적으로 삭제되었습니다.");
+            }
+        }
+
+        // 데이터 저장 함수
+        function saveData() {
+            localStorage.setItem('grinderData', JSON.stringify(grinderData));
+        }
+
+        // 데이터 목록 렌더링 함수
+        function renderDataList() {
+            const selectedGrinder = viewGrinderTypeSelect.value;
+            const selectedCharacteristic = viewBeanCharacteristicSelect.value;
+
+            if (selectedGrinder && selectedCharacteristic && grinderData[selectedGrinder][selectedCharacteristic].length > 0) {
+                // 데이터가 있을 때
+                noDataMessage.style.display = 'none';
+                dataTable.style.display = 'block';
+                dataTable.innerHTML = ''; // 기존 내용 초기화
+
+                const data = grinderData[selectedGrinder][selectedCharacteristic];
+
+                const table = document.createElement('table');
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                const thClicks = document.createElement('th');
+                thClicks.textContent = "클릭 수";
+                const thGrind = document.createElement('th');
+                thGrind.textContent = "분쇄도 (µm)";
+                const thAction = document.createElement('th');
+                thAction.textContent = "삭제";
+
+                headerRow.appendChild(thClicks);
+                headerRow.appendChild(thGrind);
+                headerRow.appendChild(thAction);
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+
+                const tbody = document.createElement('tbody');
+
+                data.forEach((item, index) => {
+                    const row = document.createElement('tr');
+
+                    const tdClicks = document.createElement('td');
+                    tdClicks.textContent = Math.round(item.clicks); // 클릭 수를 정수로 표시
+
+                    const tdGrind = document.createElement('td');
+                    tdGrind.textContent = item.grind;
+
+                    const tdAction = document.createElement('td');
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.classList.add('delete-btn');
+                    // SVG 아이콘 추가
+                    deleteBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 290">
+                            <path d="M265,60h-30h-15V15c0-8.284-6.716-15-15-15H85c-8.284,0-15,6.716-15,15v45H55H25c-8.284,0-15,6.716-15,15s6.716,15,15,15
+                                h5.215H40h210h9.166H265c8.284,0,15-6.716,15-15S273.284,60,265,60z M190,60h-15h-60h-15V30h90V60z"/>
+                            <path d="M40,275c0,8.284,6.716,15,15,15h180c8.284,0,15-6.716,15-15V120H40V275z"/>
+                        </svg>
+                    `;
+                    // 접근성 향상을 위한 aria-label 추가
+                    deleteBtn.setAttribute('aria-label', '삭제');
+                    deleteBtn.onclick = () => deleteData(selectedGrinder, selectedCharacteristic, index);
+                    tdAction.appendChild(deleteBtn);
+
+                    row.appendChild(tdClicks);
+                    row.appendChild(tdGrind);
+                    row.appendChild(tdAction);
+
+                    tbody.appendChild(row);
+                });
+
+                table.appendChild(tbody);
+                dataTable.appendChild(table);
+            } else {
+                // 데이터가 없을 때
+                dataTable.style.display = 'none';
+                noDataMessage.style.display = 'block';
+                noDataMessage.textContent = "그라인더와 원두 특징을 선택하고 값을 입력하세요.";
+            }
+        }
+
+        // JSON으로 백업하는 함수
+        function exportToJson() {
+            const dataStr = JSON.stringify(grinderData, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'grinderData_backup.json';
+            a.click();
+
+            URL.revokeObjectURL(url);
+        }
+
+        // JSON을 불러오는 함수
+        function importFromJson(file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const importedData = JSON.parse(event.target.result);
+                    if (validateImportedData(importedData)) {
+                        // 클릭 수를 정수로 변환 (10배)
+                        for (let grinder in importedData) {
+                            for (let characteristic in importedData[grinder]) {
+                                importedData[grinder][characteristic] = importedData[grinder][characteristic].map(entry => ({
+                                    clicks: Math.round(entry.clicks * 10),
+                                    grind: entry.grind
+                                }));
+                            }
+                        }
+                        grinderData = importedData;
+                        saveData();
+                        populateGrinderTypes();
+                        populateBeanCharacteristics();
+                        renderDataList();
+                        alert("데이터가 성공적으로 불러와졌습니다.");
+                    } else {
+                        alert("유효하지 않은 데이터 형식입니다.");
+                    }
+                } catch (error) {
+                    alert("JSON 파일을 읽는 중 오류가 발생했습니다.");
+                    console.error(error);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // 불러온 데이터의 유효성 검사 함수
+        function validateImportedData(data) {
+            // 간단한 유효성 검사: 객체 형태이고 각 그라인더는 객체, 각 원두 특징은 배열
+            if (typeof data !== 'object' || Array.isArray(data) || data === null) return false;
+            for (let grinder in data) {
+                if (typeof data[grinder] !== 'object' || Array.isArray(data[grinder]) || data[grinder] === null) return false;
+                for (let characteristic in data[grinder]) {
+                    if (!Array.isArray(data[grinder][characteristic])) return false;
+                    for (let entry of data[grinder][characteristic]) {
+                        if (typeof entry.clicks !== 'number' || typeof entry.grind !== 'number') return false;
+                        if (!Number.isInteger(entry.clicks)) return false; // 클릭 수가 정수인지 확인
+                    }
+                }
+            }
+            return true;
+        }
+
+        // 백업 버튼 클릭 시 JSON으로 백업
+        exportJsonBtn.addEventListener('click', exportToJson);
+
+        // 복원 버튼 클릭 시 파일 선택 창 열기
+        importJsonBtn.addEventListener('click', () => {
+            importFileInput.click();
+        });
+
+        // 파일 선택 시 JSON 불러오기
+        importFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file && file.type === "application/json") {
+                importFromJson(file);
+            } else {
+                alert("JSON 파일을 선택해주세요.");
+            }
+            // 파일 선택 후 입력값 초기화
+            importFileInput.value = '';
+        });
+
+        // 초기화 실행
+        initialize();
+    </script>
+
+</body>
+</html>

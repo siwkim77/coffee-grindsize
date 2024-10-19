@@ -19,9 +19,6 @@
     <!-- 구글 폰트 추가 -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome 링크 제거 -->
-    <!-- Font Awesome을 더 이상 사용하지 않으므로 제거합니다. -->
-    
     <style>
         /* 글로벌 스타일 */
         *, *::before, *::after {
@@ -149,8 +146,10 @@
             cursor: pointer;
             padding: 0;
             transition: color 0.3s;
-            text-align: center;
-         }
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
         .data-list td .delete-btn:hover {
             color: #B71C1C;
@@ -257,8 +256,9 @@
     <div class="backup-restore">
         <button id="exportJson">JSON으로 백업</button>
         <button id="importJson">JSON 불러오기</button>
+        <button id="updateJson">업데이트</button> <!-- 업데이트 버튼 추가 -->
         <button id="resetData">초기화</button> <!-- 초기화 버튼 추가 -->
-        <input type="file" id="importFile" accept=".json">
+        <input type="file" id="importFile" accept=".json" multiple> <!-- multiple 속성 추가 -->
     </div>
     
     <div class="navigation">
@@ -267,6 +267,7 @@
 
 
     <script>
+        // 초기 데이터 정의
         const defaultData = {
             "1Zpresso K-Ultra": {
                 "약배전 에티오피아 내추럴": [
@@ -316,7 +317,7 @@
         };
 
         // 데이터 로드 또는 초기화
-        let grinderData = JSON.parse(localStorage.getItem('grinderData')) || defaultData;
+        let grinderData = JSON.parse(localStorage.getItem('grinderData')) || JSON.parse(JSON.stringify(defaultData));
 
         // DOM 요소 참조
         const viewGrinderTypeSelect = document.getElementById('viewGrinderType');
@@ -326,6 +327,7 @@
         const dataTable = document.getElementById('dataTable');
         const exportJsonBtn = document.getElementById('exportJson');
         const importJsonBtn = document.getElementById('importJson');
+        const updateJsonBtn = document.getElementById('updateJson'); // 업데이트 버튼 참조
         const resetDataBtn = document.getElementById('resetData'); // 초기화 버튼 참조
         const importFileInput = document.getElementById('importFile');
 
@@ -421,7 +423,7 @@
                     const row = document.createElement('tr');
 
                     const tdClicks = document.createElement('td');
-                    tdClicks.textContent = Math.round(item.clicks); // 클릭 수를 정수로 표시
+                    tdClicks.textContent = item.clicks; // 클릭 수는 이미 정수로 저장됨
 
                     const tdGrind = document.createElement('td');
                     tdGrind.textContent = item.grind;
@@ -473,21 +475,61 @@
             URL.revokeObjectURL(url);
         }
 
-        // JSON을 불러오는 함수
+        // 데이터 병합 함수 (중복 제외: 동일 그라인더, 원두 특징, 클릭 수)
+        function mergeData(importedData) {
+            let newEntries = 0; // 추가된 새로운 데이터 수
+
+            for (let grinder in importedData) {
+                if (!grinderData.hasOwnProperty(grinder)) {
+                    // 새로운 그라인더 추가
+                    grinderData[grinder] = {};
+                }
+
+                for (let characteristic in importedData[grinder]) {
+                    if (!grinderData[grinder].hasOwnProperty(characteristic)) {
+                        // 새로운 원두 특징 추가
+                        grinderData[grinder][characteristic] = [];
+                    }
+
+                    importedData[grinder][characteristic].forEach(importedEntry => {
+                        const isDuplicate = grinderData[grinder][characteristic].some(existingEntry => 
+                            existingEntry.clicks === importedEntry.clicks && existingEntry.grind === importedEntry.grind
+                        );
+
+                        if (!isDuplicate) {
+                            grinderData[grinder][characteristic].push({
+                                clicks: importedEntry.clicks,
+                                grind: importedEntry.grind
+                            });
+                            newEntries++;
+                        }
+                    });
+
+                    // 클릭 수 기준 내림차순 정렬
+                    grinderData[grinder][characteristic].sort((a, b) => b.clicks - a.clicks);
+                }
+            }
+
+            return newEntries;
+        }
+
+        // JSON을 불러오는 함수 (중복 제외하고 병합)
         function importFromJson(file) {
             const reader = new FileReader();
             reader.onload = function(event) {
                 try {
                     const importedData = JSON.parse(event.target.result);
                     if (validateImportedData(importedData)) {
-                        // 클릭 수를 정수로 변환 (10배 필요 없다면 생략)
-                        // 여기서는 이미 클릭 수가 정수로 가정
-                        grinderData = importedData;
+                        const addedEntries = mergeData(importedData); // 데이터 병합 (중복 제외)
                         saveData();
                         populateGrinderTypes();
                         populateBeanCharacteristics();
                         renderDataList();
-                        alert("데이터가 성공적으로 불러와졌습니다.");
+                        if (addedEntries > 0) {
+                            alert("데이터가 성공적으로 불러와졌습니다.");
+                        } else {
+                            alert("불러온 데이터에 변경 사항이 없습니다.");
+                        }
                     } else {
                         alert("유효하지 않은 데이터 형식입니다.");
                     }
@@ -519,7 +561,7 @@
         // 초기화 버튼 클릭 시 모든 데이터 삭제하고 기본 데이터로 복원
         function resetData() {
             if (confirm("모든 데이터를 삭제하고 기본 데이터로 초기화하시겠습니까?")) {
-                grinderData = defaultData;
+                grinderData = JSON.parse(JSON.stringify(defaultData)); // deep copy
                 saveData();
                 populateGrinderTypes();
                 populateBeanCharacteristics();
@@ -528,27 +570,116 @@
             }
         }
 
+        // 업데이트 버튼 클릭 시 업데이트 파일 자동 불러오기
+        function updateJson() {
+            const filePath = `update/update.json`; // update.json 파일 경로
+
+            fetch(filePath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`파일을 찾을 수 없습니다: ${filePath}`);
+                    }
+                    return response.json();
+                })
+                .then(importedData => {
+                    if (validateImportedData(importedData)) {
+                        const addedEntries = mergeData(importedData);
+                        saveData();
+                        populateGrinderTypes();
+                        populateBeanCharacteristics();
+                        renderDataList();
+                        if (addedEntries > 0) {
+                            alert(`업데이트 파일(${filePath})이 성공적으로 병합되었습니다. 추가된 데이터 수: ${addedEntries}`);
+                        } else {
+                            alert("데이터베이스가 이미 최신 상태입니다.");
+                        }
+                    } else {
+                        alert("유효하지 않은 데이터 형식입니다.");
+                    }
+                })
+                .catch(error => {
+                    alert(`업데이트 파일을 불러오는 중 오류가 발생했습니다.\n${error.message}`);
+                    console.error(error);
+                });
+        }
+
         // 백업 버튼 클릭 시 JSON으로 백업
         exportJsonBtn.addEventListener('click', exportToJson);
 
-        // 복원 버튼 클릭 시 파일 선택 창 열기
+        // 불러오기 버튼 클릭 시 파일 선택 창 열기
         importJsonBtn.addEventListener('click', () => {
             importFileInput.click();
         });
 
+        // 업데이트 버튼 클릭 시 업데이트 함수 호출
+        updateJsonBtn.addEventListener('click', updateJson);
+
         // 초기화 버튼 클릭 시 초기화 함수 호출
         resetDataBtn.addEventListener('click', resetData);
 
-        // 파일 선택 시 JSON 불러오기
+        // 파일 선택 시 JSON 불러오기 (여러 파일 지원)
         importFileInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file && file.type === "application/json") {
-                importFromJson(file);
-            } else {
+            const files = event.target.files;
+            if (files.length === 0) {
                 alert("JSON 파일을 선택해주세요.");
+                return;
             }
-            // 파일 선택 후 입력값 초기화
-            importFileInput.value = '';
+
+            let validFiles = Array.from(files).filter(file => file.type === "application/json");
+            if (validFiles.length === 0) {
+                alert("유효한 JSON 파일을 선택해주세요.");
+                return;
+            }
+
+            let processedCount = 0;
+            let totalAddedEntries = 0;
+
+            validFiles.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const importedData = JSON.parse(event.target.result);
+                        if (validateImportedData(importedData)) {
+                            const addedEntries = mergeData(importedData);
+                            totalAddedEntries += addedEntries;
+                            saveData();
+                            populateGrinderTypes();
+                            populateBeanCharacteristics();
+                            renderDataList();
+                            processedCount++;
+                            if (processedCount === validFiles.length) {
+                                if (totalAddedEntries > 0) {
+                                    alert(`선택한 JSON 파일이 성공적으로 불러와졌습니다. 추가된 데이터 수: ${totalAddedEntries}`);
+                                } else {
+                                    alert("선택한 JSON 파일에 변경 사항이 없습니다.");
+                                }
+                            }
+                        } else {
+                            alert(`파일 ${file.name}의 데이터 형식이 유효하지 않습니다.`);
+                            processedCount++;
+                            if (processedCount === validFiles.length) {
+                                if (totalAddedEntries > 0) {
+                                    alert(`선택한 JSON 파일이 성공적으로 불러와졌습니다. 추가된 데이터 수: ${totalAddedEntries}`);
+                                } else {
+                                    alert("선택한 JSON 파일에 변경 사항이 없습니다.");
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        alert(`파일 ${file.name}을 읽는 중 오류가 발생했습니다.`);
+                        console.error(error);
+                        processedCount++;
+                        if (processedCount === validFiles.length) {
+                            if (totalAddedEntries > 0) {
+                                alert(`선택한 JSON 파일이 성공적으로 불러와졌습니다. 추가된 데이터 수: ${totalAddedEntries}`);
+                            } else {
+                                alert("선택한 JSON 파일에 변경 사항이 없습니다.");
+                            }
+                        }
+                    }
+                };
+                reader.readAsText(file);
+            });
         });
 
         // 초기화 실행

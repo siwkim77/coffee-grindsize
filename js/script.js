@@ -331,11 +331,5 @@ function initialize() {
       localStorage.setItem('grinderData', JSON.stringify(grinderData));
   }
   
-  // 데이터 목록 렌더링 함수
-  function renderDataList() {
-      // 현재 메인 페이지에는 데이터 목록이 없으므로 이 함수는 필요 없습니다.
-      // 데이터 관리 페이지에서 별도로 구현됩니다.
-  }
-  
   // 초기화 실행
   initialize();

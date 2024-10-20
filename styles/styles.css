@@ -1,19 +1,53 @@
- /* 글로벌 스타일 */
+/* 글로벌 스타일 */
 *, *::before, *::after {
     box-sizing: border-box;
 }
 
-/* CSS 변수으로 색상 관리 */
+/* CSS 변수로 색상 관리 */
 :root {
-    --primary-color: #4E342E;
-    --secondary-color: #6D4C41;
-    --accent-color: #FFB74D;
-    --background-color: #f5f5f5;
-    --text-color: #3E2723;
-    --border-color: #BCAAA4;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    --success-color: #8BC34A;
-    --info-color: #FFB74D;
+    --primary-color: #1E88E5;          /* 메인 블루 */
+    --secondary-color: #1565C0;        /* 딥 블루 */
+    --accent-color: #176cff;           /* 포인트 핑크 */
+    --background-color: #F5F5F5;       /* 밝은 배경색 */
+    --element-background-color: #FFFFFF; /* 요소 배경색 */
+    --text-color: #212121;             /* 진한 그레이 */
+    --border-color: #E0E0E0;           /* 연한 그레이 */
+    --shadow-color: rgba(0, 0, 0, 0.1); /* 그림자 색상 */
+    --success-color: #4CAF50;          /* 성공 색상 */
+    --info-color: #2196F3;             /* 정보 색상 */
+    --button-hover-color: #53a0f9;     /* 버튼 호버 색상 */
+    --slider-background-color: #BDBDBD; /* 슬라이더 배경색 */
+    --slider-knob-color: #FFFFFF;      /* 슬라이더 노브 색상 */
+    --result-background-color: #E3F2FD; /* 결과 배경색 */
+    --result-border-color: var(--accent-color); /* 결과 테두리 색상 */
+    --button-text-color: #FFFFFF;       /* 버튼 텍스트 색상 */
+    --input-background-color: #FFFFFF;  /* 입력창 배경색 */
+    --input-text-color: #212121;   
+    --error-color: #FF5252;  
+    --error-color-hover: #B71C1C;
+    --table-header-text-color: #121212;   
+}
+
+.dark-mode {
+    --primary-color: #BBDEFB;          /* 밝은 블루 */
+    --secondary-color: #90CAF9;        /* 연한 블루 */
+    --accent-color: #80d7ff;           /* 부드러운 핑크 */
+    --background-color: #121212;       /* 어두운 배경색 */
+    --element-background-color: #1E1E1E; /* 요소 어두운 배경색 */
+    --text-color: #E0E0E0;             /* 밝은 텍스트 색상 */
+    --border-color: #424242;           /* 어두운 테두리 색상 */
+    --shadow-color: rgba(255, 255, 255, 0.1); /* 그림자 색상 */
+    --success-color: #81C784;          /* 성공 색상 */
+    --info-color: #64B5F6;             /* 정보 색상 */
+    --button-hover-color: #1E88E5;     /* 버튼 호버 색상 */
+    --slider-background-color: #757575; /* 슬라이더 배경색 */
+    --slider-knob-color: #FFFFFF;      /* 슬라이더 노브 색상 */
+    --result-background-color: #1E88E5; /* 결과 배경색 */
+    --result-border-color: var(--accent-color); /* 결과 테두리 색상 */
+    --button-text-color: #FFFFFF;       /* 버튼 텍스트 색상 */
+    --input-background-color: #1E1E1E;  /* 입력창 배경색 */
+    --input-text-color: #E0E0E0;
+    --table-header-text-color: #212121;        /* 입력창 텍스트 색상 */
 }
 
 /* 스위치 스타일링 */
@@ -44,7 +78,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
+    background-color: var(--slider-background-color);
     transition: 0.4s;
     border-radius: 34px;
     margin: 0px;
@@ -57,7 +91,7 @@
     width: 26px;
     left: 4px;
     bottom: 4px;
-    background-color: white;
+    background-color: var(--slider-knob-color);
     transition: 0.4s;
     border-radius: 50%;
 }
@@ -68,19 +102,6 @@ input:checked + .slider {
 
 input:checked + .slider:before {
     transform: translateX(26px);
-}
-
-/* 다크 모드 클래스 */
-.dark-mode {
-    --primary-color: #D7CCC8;
-    --secondary-color: #BCAAA4;
-    --accent-color: #FF8A65;
-    --background-color: #303030;
-    --text-color: #FFFFFF;
-    --border-color: #757575;
-    --shadow-color: rgba(255, 255, 255, 0.1);
-    --success-color: #AED581;
-    --info-color: #FF8A65;
 }
 
 /* 토글 라벨 스타일 */
@@ -102,11 +123,11 @@ h1 {
     text-align: center;
     font-size: 2em;
     margin-bottom: 30px;
-    color: var(--primary-color);
+    color: var(--text-color);
 }
 
 .converter, .add-data {
-    background: var(--background-color);
+    background: var(--element-background-color);
     padding: 25px 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px var(--shadow-color);
@@ -133,6 +154,8 @@ select, input {
     font-size: 1em;
     border: 1px solid var(--border-color);
     border-radius: 5px;
+    background-color: var(--input-background-color);
+    color: var(--input-text-color);
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
@@ -145,8 +168,8 @@ select:focus, input:focus {
 .result {
     margin-top: 25px;
     padding: 15px;
-    background: #FFE0B2;
-    border-left: 5px solid var(--accent-color);
+    background: var(--result-background-color);
+    border-left: 5px solid var(--result-border-color);
     border-radius: 5px;
     font-size: 1.1em;
     text-align: center;
@@ -160,14 +183,14 @@ select:focus, input:focus {
     border: none;
     border-radius: 5px;
     background-color: var(--info-color);
-    color: #fff;
+    color: var(--button-text-color);
     cursor: pointer;
     transition: background-color 0.3s;
     margin-bottom: 0px;
 }
 
-.add-data button:hover {
-    background-color: #FFA726;
+.add-data  button:hover {
+    background-color: var(--button-hover-color);
 }
 
 .add-data form {
@@ -198,13 +221,15 @@ select:focus, input:focus {
 
 .add-data form .sub-field .input-group input {
     flex: 1;
+    background-color: var(--input-background-color);
+    color: var(--input-text-color);
 }
 
 .add-data form .sub-field .input-group button.submit-btn {
     flex: none;
     padding: 12px 20px;
     background-color: var(--info-color);
-    color: var(--background-color);
+    color: var(--button-text-color);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -213,7 +238,7 @@ select:focus, input:focus {
 }
 
 .add-data form .sub-field .input-group button.submit-btn:hover {
-    background-color: #FFA726;
+    background-color: var(--button-hover-color);
 }
 
 .add-data form .sub-field.add-button {
@@ -234,7 +259,7 @@ select:focus, input:focus {
 
     h1 {
         font-size: 1.5em;
-        margin-bottom: 20px;
+        margin-bottom: 30px;
     }
 
     .converter, .add-data {

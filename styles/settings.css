@@ -1,5 +1,5 @@
 .data-view, .navigation, .backup-restore, .darkmode-toggle {
-    background: --background-color;
+    background: var(--element-background-color);
     padding: 25px 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px var(--shadow-color);
@@ -9,11 +9,11 @@
     margin-right: auto;
 }
 
-.darkmode-toggle{
+.darkmode-toggle {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 15;
+    padding: 20px 15px;
 }
 
 .navigation a {
@@ -30,10 +30,10 @@
 }
 
 .no-data-message {
-    margin-top: 25px;
+    margin: 0;
     padding: 15px;
-    background: #FFE0B2;
-    border-left: 5px solid var(--accent-color);
+    background: var(--result-background-color);
+    border-left: 5px solid var(--result-border-color);
     border-radius: 5px;
     font-size: 1.1em;
     text-align: center;
@@ -57,14 +57,19 @@
 }
 
 .data-list th {
-    background-color: var(--secondary-color);
-    color: #fff;
+    background-color: var(--primary-color);
+    color: var(--table-header-text-color);
+}
+
+.data-list td {
+    background-color: var(--element-background-color);
+    color: var(--text-color);
 }
 
 .data-list td .delete-btn {
     background: none;
     border: none;
-    color: #E53935;
+    color: var(--error-color);
     cursor: pointer;
     padding: 0;
     transition: color 0.3s;
@@ -72,7 +77,7 @@
 }
 
 .data-list td .delete-btn:hover {
-    color: #B71C1C;
+    color: var(--error-color-hover);
 }
 
 .backup-restore {
@@ -86,21 +91,21 @@
     border: none;
     border-radius: 5px;
     background-color: var(--info-color);
-    color: #fff;
+    color: var(--button-text-color);
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
 .backup-restore button:hover {
-    background-color: #FFA726;
+    background-color: var(--button-hover-color);
 }
 
 .backup-restore #resetData {
-    background-color: #E53935;
+    background-color: var(--error-color);
 }
 
 .backup-restore #resetData:hover {
-    background-color: #B71C1C;
+    background-color: var(--error-color-hover);
 }
 
 #importFile {

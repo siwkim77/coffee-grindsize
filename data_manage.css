@@ -1,0 +1,123 @@
+.data-view, .navigation, .backup-restore {
+    background: #fff;
+    padding: 25px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    margin-bottom: 25px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.navigation a {
+    display: inline-block;
+    margin-bottom: 0px;
+    text-decoration: none;
+    color: var(--accent-color);
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.navigation a:hover {
+    color: var(--primary-color);
+}
+
+.no-data-message {
+    margin-top: 25px;
+    padding: 15px;
+    background: #FFE0B2;
+    border-left: 5px solid var(--accent-color);
+    border-radius: 5px;
+    font-size: 1.1em;
+    text-align: center;
+    color: var(--text-color);
+}
+
+.data-list {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.data-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-list th, .data-list td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.data-list th {
+    background-color: var(--secondary-color);
+    color: #fff;
+}
+
+.data-list td .delete-btn {
+    background: none;
+    border: none;
+    color: #E53935;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.3s;
+    text-align: center;
+}
+
+.data-list td .delete-btn:hover {
+    color: #B71C1C;
+}
+
+.backup-restore {
+    text-align: center;
+}
+
+.backup-restore button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--info-color);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.backup-restore button:hover {
+    background-color: #FFA726;
+}
+
+.backup-restore #resetData {
+    background-color: #E53935;
+}
+
+.backup-restore #resetData:hover {
+    background-color: #B71C1C;
+}
+
+#importFile {
+    display: none;
+}
+
+.delete-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+@media (max-width: 600px) {
+    .data-view, .navigation, .backup-restore {
+        padding: 20px 15px;
+        max-width: 100%;
+    }
+
+    .data-list table, .data-list th, .data-list td {
+        font-size: 0.9em;
+    }
+
+    .backup-restore button {
+        width: 100%;
+        margin: 10px 0;
+    }
+}

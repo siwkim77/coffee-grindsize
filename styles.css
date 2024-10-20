@@ -1,0 +1,225 @@
+ /* 글로벌 스타일 */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* CSS 변수으로 색상 관리 */
+:root {
+    --primary-color: #4E342E;
+    --secondary-color: #6D4C41;
+    --accent-color: #FFB74D;
+    --background-color: #f5f5f5;
+    --text-color: #3E2723;
+    --border-color: #BCAAA4;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --success-color: #8BC34A;
+    --info-color: #FFB74D;
+}
+
+/* 기본 스타일링 */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+h1 {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 30px;
+    color: var(--primary-color);
+}
+
+.converter, .add-data {
+    background: #fff;
+    padding: 25px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    margin-bottom: 25px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.field {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+select, input {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1em;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+select:focus, input:focus {
+    border-color: var(--accent-color);
+    outline: none;
+    box-shadow: 0 0 5px var(--accent-color);
+}
+
+.result {
+    margin-top: 25px;
+    padding: 15px;
+    background: #FFE0B2;
+    border-left: 5px solid var(--accent-color);
+    border-radius: 5px;
+    font-size: 1.1em;
+    text-align: center;
+    color: var(--text-color);
+}
+
+.add-data button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--info-color);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 0px;
+}
+
+.add-data button:hover {
+    background-color: #FFA726;
+}
+
+.add-data form {
+    display: none;
+    margin-top: 20px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.add-data form.active {
+    display: block;
+}
+
+.add-data form h3 {
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.add-data form .sub-field {
+    margin-bottom: 15px;
+}
+
+.add-data form .sub-field .input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.add-data form .sub-field .input-group input {
+    flex: 1;
+}
+
+.add-data form .sub-field .input-group button.submit-btn {
+    flex: none;
+    padding: 12px 20px;
+    background-color: var(--info-color);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    height: 42px;
+}
+
+.add-data form .sub-field .input-group button.submit-btn:hover {
+    background-color: #FFA726;
+}
+
+.add-data form .sub-field.add-button {
+    text-align: right;
+}
+
+.add-data form .sub-field.add-button button.submit-btn {
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+    }
+
+    .converter, .add-data {
+        padding: 20px 15px;
+        max-width: 100%;
+    }
+
+    .result {
+        font-size: 1em;
+        padding: 12px;
+    }
+
+    .add-data button, .add-data form .sub-field .input-group button.submit-btn {
+        font-size: 0.95em;
+        padding: 10px;
+        height: 40px;
+    }
+
+    .add-data form .sub-field .input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .add-data form .sub-field .input-group button.submit-btn {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .add-data form .sub-field.add-button button.submit-btn {
+        max-width: 100%;
+    }
+}
+
+/* 데스크탑에서 입력창과 버튼의 비율 조정 */
+@media (min-width: 601px) {
+    .add-data form .sub-field .input-group input {
+        flex: 3;
+    }
+
+    .add-data form .sub-field .input-group button.submit-btn {
+        flex: 1;
+    }
+}
+
+/* 데이터 관리 페이지 링크 스타일 */
+.manage-link {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.manage-link a {
+    text-decoration: none;
+    color: var(--accent-color);
+    font-weight: 500;
+    font-size: 0.8em;
+    transition: color 0.3s;
+}
+
+.manage-link a:hover {
+    color: var(--primary-color);
+}

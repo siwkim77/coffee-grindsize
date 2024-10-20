@@ -1,54 +1,23 @@
-const defaultData = {
-    "1Zpresso K-Ultra": {
-      "약배전 에티오피아 내추럴": [
-        { "clicks": 100, "grind": 1220 },
-        { "clicks": 95, "grind": 1150 },
-        { "clicks": 90, "grind": 1080 },
-        { "clicks": 85, "grind": 1040 },
-        { "clicks": 80, "grind": 980 },
-        { "clicks": 75, "grind": 940 },
-        { "clicks": 70, "grind": 900 },
-        { "clicks": 65, "grind": 875 },
-        { "clicks": 60, "grind": 850 },
-        { "clicks": 55, "grind": 800 },
-        { "clicks": 50, "grind": 750 },
-        { "clicks": 45, "grind": 700 },
-        { "clicks": 40, "grind": 650 }
-      ]
-    },
-    "KINGrinder K6": {
-      "약배전 에티오피아 내추럴": [
-        { "clicks": 130, "grind": 1300 },
-        { "clicks": 120, "grind": 1200 },
-        { "clicks": 110, "grind": 1100 },
-        { "clicks": 100, "grind": 1000 },
-        { "clicks": 90, "grind": 950 },
-        { "clicks": 80, "grind": 900 },
-        { "clicks": 70, "grind": 850 },
-        { "clicks": 60, "grind": 750 },
-        { "clicks": 50, "grind": 650 }
-      ]
-    },
-    "1Zpresso ZP6": {
-      "약배전 에티오피아 내추럴": [
-        { "clicks": 66, "grind": 1163 },
-        { "clicks": 61, "grind": 1100 },
-        { "clicks": 56, "grind": 1037 },
-        { "clicks": 51, "grind": 985 },
-        { "clicks": 46, "grind": 900 },
-        { "clicks": 41, "grind": 850 },
-        { "clicks": 36, "grind": 775 },
-        { "clicks": 31, "grind": 700 },
-        { "clicks": 26, "grind": 650 },
-        { "clicks": 21, "grind": 600 },
-        { "clicks": 16, "grind": 524 }
-      ]
-    }
-  };
-  
-  // 데이터 로드 또는 초기화
-  let grinderData = JSON.parse(localStorage.getItem('grinderData')) || defaultData;
-  
+// 데이터 로드 또는 초기화
+let grinderData;
+
+fetch('json/init_data.json')
+    .then(response => response.json())
+    .then(data => {
+        grinderData = JSON.parse(localStorage.getItem('grinderData')) || data;
+        initialize();
+    })
+    .catch(error => console.error('초기 데이터를 불러오는 중 오류가 발생했습니다:', error));
+
+// 초기화 함수
+function initialize() {
+    populateGrinderTypes(); 
+    populateBeanCharacteristics();
+    populateSelectGrinder();
+    populateSelectBeanCharacteristic();
+    updateResultMessage("그라인더와 원두 특징을 선택하고 \n 값을 입력하세요.");
+}
+
   // DOM 요소 참조
   const grinderTypeSelect = document.getElementById('grinderType');
   const beanCharacteristicSelect = document.getElementById('beanCharacteristic');

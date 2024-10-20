@@ -209,14 +209,15 @@ select:focus, input:focus {
 /* 데이터 관리 페이지 링크 스타일 */
 .manage-link {
     text-align: center;
-    margin-top: 30px;
+    margin: 30px;
+    padding-bottom: 30px;
 }
 
 .manage-link a {
     text-decoration: none;
     color: var(--accent-color);
     font-weight: 500;
-    font-size: 0.8em;
+    font-size: 1em;
     transition: color 0.3s;
 }
 

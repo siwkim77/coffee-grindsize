@@ -183,7 +183,7 @@ function initialize() {
           const data = grinderData[selectedGrinder][selectedCharacteristic];
           if (!isNaN(clicks)) {
               const grind = findGrindFromClicks(clicks, data);
-              updateResultMessage(`분쇄도: ${grind}`);
+              updateResultMessage(`분쇄도: ${grind}μm`);
               // 분쇄도 필드 업데이트
               if (!isNaN(parseFloat(grind))) {
                   const grindValue = parseFloat(grind);

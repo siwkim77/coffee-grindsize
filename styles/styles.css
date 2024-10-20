@@ -16,6 +16,79 @@
     --info-color: #FFB74D;
 }
 
+/* 스위치 스타일링 */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin-bottom: 0;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+    margin: 0px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--accent-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* 다크 모드 클래스 */
+.dark-mode {
+    --primary-color: #D7CCC8;
+    --secondary-color: #BCAAA4;
+    --accent-color: #FF8A65;
+    --background-color: #303030;
+    --text-color: #FFFFFF;
+    --border-color: #757575;
+    --shadow-color: rgba(255, 255, 255, 0.1);
+    --success-color: #AED581;
+    --info-color: #FF8A65;
+}
+
+/* 토글 라벨 스타일 */
+#themeLabel {
+    font-size: 1.1em;
+    color: var(--primary-color);
+}
+
 /* 기본 스타일링 */
 body {
     font-family: 'Roboto', sans-serif;
@@ -33,7 +106,7 @@ h1 {
 }
 
 .converter, .add-data {
-    background: #fff;
+    background: var(--background-color);
     padding: 25px 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px var(--shadow-color);
@@ -131,7 +204,7 @@ select:focus, input:focus {
     flex: none;
     padding: 12px 20px;
     background-color: var(--info-color);
-    color: #fff;
+    color: var(--background-color);
     border: none;
     border-radius: 5px;
     cursor: pointer;

@@ -1,3 +1,9 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+});
 // 데이터 로드 또는 초기화
 let grinderData;
 

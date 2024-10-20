@@ -1,5 +1,5 @@
-.data-view, .navigation, .backup-restore {
-    background: #fff;
+.data-view, .navigation, .backup-restore, .darkmode-toggle {
+    background: --background-color;
     padding: 25px 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px var(--shadow-color);
@@ -7,6 +7,13 @@
     max-width: 800px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.darkmode-toggle{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 15;
 }
 
 .navigation a {

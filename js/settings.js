@@ -33,6 +33,26 @@ function initialize() {
     populateBeanCharacteristics();
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const themeSwitch = document.getElementById('themeSwitch');
+    const currentTheme = localStorage.getItem('theme');
+
+    if (currentTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeSwitch.checked = true;
+    }
+
+    themeSwitch.addEventListener('change', function() {
+        if (this.checked) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+});
+
 // 그라인더 종류 드롭다운 채우기
 function populateGrinderTypes() {
     viewGrinderTypeSelect.innerHTML = '<option value="">그라인더 선택</option>';
